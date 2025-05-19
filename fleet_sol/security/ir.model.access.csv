@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id,perm_read,perm_write,perm_create,perm_unlink
+access_taller_solicitud,taller.solicitud,model_taller_solicitud,,1,1,1,1
