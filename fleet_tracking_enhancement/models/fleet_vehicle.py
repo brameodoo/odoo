@@ -9,6 +9,7 @@ class FleetVehicle(models.Model):
     vin_sn = fields.Char(string='vin_sn', tracking=True)
     x_studio_distrito = fields.Char(string='x_studio_distrito', tracking=True)
     category_id = fields.Many2one(string='category_id', tracking=True)
+    mobility_card = fields.Char(string='mobility_card', tracking=True)
     # Añade aquí otros campos que quieras rastrear
     # Ejemplo:
     # manager_id = fields.Many2one('res.users', string='Manager', tracking=True)
