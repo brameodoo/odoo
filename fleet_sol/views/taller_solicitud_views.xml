@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_taller_solicitud_form" model="ir.ui.view">
-        <field name="name">taller.solicitud.form</field>
-        <field name="model">taller.solicitud</field>
-        <field name="arch" type="xml">
-            <form string="Solicitud de Taller">
-                <sheet>
-                    <group>
-                        <field name="name" readonly="1"/>
-                        <field name="analista_id" readonly="1"/>
-                        <field name="vehiculo_id"/>
-                        <field name="descripcion_falla"/>
-                        <field name="telefono_analista" readonly="1"/>
-                        <field name="fecha_solicitud" readonly="1"/>
-                        <field name="fecha_asignacion" attrs="{'readonly': [('state', '=', 'draft')]}"/>
-                        <field name="state" readonly="1"/>
-                    </group>
-                    <footer>
-                        <button name="action_confirmar" type="object" string="Confirmar Solicitud" class="btn-primary" states="draft"/>
-                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </sheet>
-            </form>
-        </field>
-    </record>
+    <data>
+        <record id="view_taller_solicitud_form" model="ir.ui.view">
+            <field name="name">taller.solicitud.form</field>
+            <field name="model">taller.solicitud</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de Taller">
+                    <sheet>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="analista_id" readonly="1"/>
+                            <field name="vehiculo_id"/>
+                            <field name="descripcion_falla"/>
+                            <field name="telefono_analista" readonly="1"/>
+                            <field name="fecha_solicitud" readonly="1"/>
+                            <field name="fecha_asignacion" attrs="{'readonly': [('state', '=', 'draft')]}"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                        <footer>
+                            <button name="action_confirmar" type="object" string="Confirmar Solicitud" class="btn-primary" states="draft"/>
+                            <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-    <record id="view_taller_solicitud_tree" model="ir.ui.view">
-        <field name="name">taller.solicitud.tree</field>
-        <field name="model">taller.solicitud</field>
-        <field name="arch" type="xml">
-            <tree string="Solicitudes Taller">
-                <field name="name"/>
-                <field name="descripcion_falla"/>
-                <field name="analista_id"/>
-                <field name="vehiculo_id"/>
-                <field name="fecha_solicitud"/>
-                <field name="fecha_asignacion"/>
-                <field name="state"/>
-            </tree>
-        </field>
-    </record>
+        <record id="view_taller_solicitud_tree" model="ir.ui.view">
+            <field name="name">taller.solicitud.tree</field>
+            <field name="model">taller.solicitud</field>
+            <field name="arch" type="xml">
+                <tree string="Solicitudes Taller">
+                    <field name="name"/>
+                    <field name="descripcion_falla"/>
+                    <field name="analista_id"/>
+                    <field name="vehiculo_id"/>
+                    <field name="fecha_solicitud"/>
+                    <field name="fecha_asignacion"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
 
-    <menuitem id="menu_taller_root" name="Taller"/>
-    <menuitem id="menu_taller_solicitud" name="Solicitudes" parent="menu_taller_root"/>
-    <act_window id="action_taller_solicitud"
-                name="Solicitudes Taller"
-                res_model="taller.solicitud"
-                view_mode="tree,form"
-                menu_id="menu_taller_solicitud"/>
+        <menuitem id="menu_taller_root" name="Taller"/>
+        <menuitem id="menu_taller_solicitud" name="Solicitudes" parent="menu_taller_root"/>
+        <act_window id="action_taller_solicitud"
+                    name="Solicitudes Taller"
+                    res_model="taller.solicitud"
+                    view_mode="tree,form"
+                    menu_id="menu_taller_solicitud"/>
+    </data>
 </odoo>
