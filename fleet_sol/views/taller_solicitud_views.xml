@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Menú -->
+    <!-- Menú raíz dentro de Fleet -->
     <menuitem id="menu_taller_solicitud_root"
               name="Solicitudes Taller"
               parent="fleet.menu_root"
               sequence="10" />
 
-    <!-- Acción -->
+    <!-- Acción principal -->
     <record id="action_taller_solicitud" model="ir.actions.act_window">
         <field name="name">Solicitudes Taller</field>
         <field name="res_model">taller.solicitud</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Enlace del menú a la acción -->
+    <!-- Enlace de menú que llama la acción -->
     <menuitem id="menu_taller_solicitud"
               name="Solicitudes Taller"
               parent="menu_taller_solicitud_root"
@@ -52,12 +52,18 @@
                         <field name="descripcion_falla"/>
                         <field name="telefono_analista" readonly="1"/>
                         <field name="fecha_solicitud" readonly="1"/>
-                        <field name="fecha_asignacion" attrs="{'readonly': [('state', '=', 'draft')]}"/>
+                        <field name="fecha_asignacion"/>
                         <field name="state" readonly="1"/>
                     </group>
                     <footer>
-                        <button name="action_confirmar" type="object" string="Confirmar Solicitud" class="btn-primary" states="draft"/>
-                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                        <button name="action_confirmar"
+                                type="object"
+                                string="Confirmar Solicitud"
+                                class="btn-primary"/>
+                        <button name="action_cancelar"
+                                type="object"
+                                string="Cancelar"
+                                class="btn-secondary"/>
                     </footer>
                 </sheet>
             </form>
