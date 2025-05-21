@@ -4,7 +4,7 @@
     <!-- Menú -->
     <menuitem id="menu_taller_solicitud_root"
               name="Solicitudes Taller"
-              parent="fleet.fleet_menu_root"
+              parent="fleet.menu_root"
               sequence="10" />
 
     <!-- Acción -->
