@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+
     <!-- Menú -->
-    <menuitem id="menu_taller_solicitud" name="Solicitudes Taller" parent="fleet.fleet_menu_root"/>
+    <menuitem id="menu_taller_solicitud_root"
+              name="Solicitudes Taller"
+              parent="fleet.fleet_menu_root"
+              sequence="10" />
 
     <!-- Acción -->
-    <act_window id="action_taller_solicitud"
-                name="Solicitudes Taller"
-                res_model="taller.solicitud"
-                view_mode="tree,form"
-                menu_id="menu_taller_solicitud"/>
+    <record id="action_taller_solicitud" model="ir.actions.act_window">
+        <field name="name">Solicitudes Taller</field>
+        <field name="res_model">taller.solicitud</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Enlace del menú a la acción -->
+    <menuitem id="menu_taller_solicitud"
+              name="Solicitudes Taller"
+              parent="menu_taller_solicitud_root"
+              action="action_taller_solicitud"
+              sequence="20"/>
 
     <!-- Vista árbol -->
     <record id="view_taller_solicitud_tree" model="ir.ui.view">
@@ -52,4 +63,5 @@
             </form>
         </field>
     </record>
+
 </odoo>
