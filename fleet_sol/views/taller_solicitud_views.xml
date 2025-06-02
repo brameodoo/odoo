@@ -49,7 +49,7 @@
                         <field name="descripcion_falla" readonly="state != 'draft'"/>
                         <field name="telefono_analista" readonly="1"/>
                         <field name="fecha_solicitud" readonly="1"/>
-                        <field name="fecha_asignacion" groups="fleet_sol.group_taller_admin_asignaciones" attrs="{'readonly': [('state', 'not in', ('draft', 'assigned'))]}"/>
+                        <field name="fecha_asignacion" groups="fleet_sol.group_taller_admin_asignaciones" options="{'readonly': 'state not in [\'draft\', \'assigned\']'}"/>
                         <field name="fecha_ingreso_taller" readonly="1"/>
                         <field name="fecha_reparacion_terminada" readonly="1"/>
                         <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
@@ -59,23 +59,23 @@
                                 string="Asignar Fecha"
                                 type="object"
                                 class="btn-primary"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                invisible="state != 'draft'"
                                 groups="fleet_sol.group_taller_admin_asignaciones"/>
                         <button name="action_ingresar_taller"
                                 string="Ingresar a Taller"
                                 type="object"
                                 class="btn-primary"
-                                attrs="{'invisible': [('state', '!=', 'assigned')]}"/>
+                                invisible="state != 'assigned'"/>
                         <button name="action_reparado"
                                 string="Reparación Terminada"
                                 type="object"
                                 class="btn-success"
-                                attrs="{'invisible': [('state', '!=', 'in_workshop')]}"/>
+                                invisible="state != 'in_workshop'"/>
                         <button name="action_cancelar"
                                 string="Cancelar"
                                 type="object"
                                 class="btn-secondary"
-                                attrs="{'invisible': [('state', 'in', ('repaired', 'cancel'))]}"/>
+                                invisible="state in ['repaired', 'cancel']"/>
                     </footer>
                 </sheet>
             </form>
