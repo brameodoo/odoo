@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Menú raíz dentro de Fleet -->
     <menuitem id="menu_taller_solicitud_root"
               name="Solicitudes Taller"
               parent="fleet.menu_root"
               sequence="10" />
 
-    <!-- Acción principal -->
     <record id="action_taller_solicitud" model="ir.actions.act_window">
         <field name="name">Solicitudes Taller</field>
         <field name="res_model">taller.solicitud</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Enlace de menú que llama la acción -->
     <menuitem id="menu_taller_solicitud"
               name="Solicitudes Taller"
               parent="menu_taller_solicitud_root"
               action="action_taller_solicitud"
               sequence="20"/>
 
-    <!-- Vista árbol -->
     <record id="view_taller_solicitud_tree" model="ir.ui.view">
         <field name="name">taller.solicitud.tree</field>
         <field name="model">taller.solicitud</field>
@@ -33,12 +29,13 @@
                 <field name="vehiculo_id"/>
                 <field name="fecha_solicitud"/>
                 <field name="fecha_asignacion"/>
-                <field name="state"/>
+                <field name="fecha_ingreso_taller"/>
+                <field name="fecha_reparacion_terminada"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'assigned'" decoration-success="state == 'repaired'" decoration-danger="state == 'cancel'"/>
             </tree>
         </field>
     </record>
 
-    <!-- Vista formulario -->
     <record id="view_taller_solicitud_form" model="ir.ui.view">
         <field name="name">taller.solicitud.form</field>
         <field name="model">taller.solicitud</field>
@@ -49,21 +46,36 @@
                         <field name="name" readonly="1"/>
                         <field name="analista_id" readonly="1"/>
                         <field name="vehiculo_id"/>
-                        <field name="descripcion_falla"/>
+                        <field name="descripcion_falla" readonly="state != 'draft'"/>
                         <field name="telefono_analista" readonly="1"/>
                         <field name="fecha_solicitud" readonly="1"/>
-                        <field name="fecha_asignacion"/>
-                        <field name="state" readonly="1"/>
+                        <field name="fecha_asignacion" groups="fleet_sol.group_taller_admin_asignaciones" attrs="{'readonly': [('state', 'not in', ('draft', 'assigned'))]}"/>
+                        <field name="fecha_ingreso_taller" readonly="1"/>
+                        <field name="fecha_reparacion_terminada" readonly="1"/>
+                        <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
                     </group>
                     <footer>
                         <button name="action_confirmar"
+                                string="Asignar Fecha"
                                 type="object"
-                                string="Confirmar Solicitud"
-                                class="btn-primary"/>
+                                class="btn-primary"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="fleet_sol.group_taller_admin_asignaciones"/>
+                        <button name="action_ingresar_taller"
+                                string="Ingresar a Taller"
+                                type="object"
+                                class="btn-primary"
+                                attrs="{'invisible': [('state', '!=', 'assigned')]}"/>
+                        <button name="action_reparado"
+                                string="Reparación Terminada"
+                                type="object"
+                                class="btn-success"
+                                attrs="{'invisible': [('state', '!=', 'in_workshop')]}"/>
                         <button name="action_cancelar"
-                                type="object"
                                 string="Cancelar"
-                                class="btn-secondary"/>
+                                type="object"
+                                class="btn-secondary"
+                                attrs="{'invisible': [('state', 'in', ('repaired', 'cancel'))]}"/>
                     </footer>
                 </sheet>
             </form>
