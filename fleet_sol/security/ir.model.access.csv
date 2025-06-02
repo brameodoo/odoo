@@ -1,4 +1,2 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taller_solicitud_analista,taller.solicitud (Analista),model_taller_solicitud,group_taller_analista,1,1,1,0
-access_taller_solicitud_admin_asignaciones,taller.solicitud (Admin Asignaciones),model_taller_solicitud,group_taller_admin_asignaciones,1,1,0,0
-access_taller_solicitud_all,taller.solicitud (Todos),model_taller_solicitud,,1,0,0,0
+id,name,model_id:id,group_id,perm_read,perm_write,perm_create,perm_unlink
+access_taller_solicitud,taller.solicitud,model_taller_solicitud,,1,1,1,1
