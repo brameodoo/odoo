@@ -40,11 +40,22 @@ class TallerSolicitud(models.Model):
         readonly=True
     )
     fecha_asignacion = fields.Datetime(
-        string='Fecha de Asignación'
+        string='Fecha de Asignación',
+        tracking=True
+    )
+    fecha_ingreso_taller = fields.Datetime(
+        string='Fecha de Ingreso a Taller',
+        tracking=True
+    )
+    fecha_reparacion_terminada = fields.Datetime(
+        string='Fecha de Reparación Terminada',
+        tracking=True
     )
     state = fields.Selection([
         ('draft', 'Borrador'),
-        ('confirmed', 'Confirmado'),
+        ('assigned', 'Fecha Asignada'),
+        ('in_workshop', 'Ingreso a Taller'),
+        ('repaired', 'Reparado'),
         ('cancel', 'Cancelado')
     ], string='Estado', default='draft', tracking=True)
 
@@ -57,8 +68,22 @@ class TallerSolicitud(models.Model):
     def action_confirmar(self):
         for record in self:
             if record.state != 'draft':
-                raise UserError("Solo puedes confirmar solicitudes en estado Borrador.")
-            record.state = 'confirmed'
+                raise UserError("Solo puedes asignar fecha a solicitudes en estado Borrador.")
+            record.state = 'assigned'
+
+    def action_ingresar_taller(self):
+        for record in self:
+            if record.state != 'assigned':
+                raise UserError("Solo puedes marcar como 'Ingreso a Taller' solicitudes con fecha asignada.")
+            record.state = 'in_workshop'
+            record.fecha_ingreso_taller = fields.Datetime.now()
+
+    def action_reparado(self):
+        for record in self:
+            if record.state != 'in_workshop':
+                raise UserError("Solo puedes marcar como 'Reparado' solicitudes que han ingresado al taller.")
+            record.state = 'repaired'
+            record.fecha_reparacion_terminada = fields.Datetime.now()
 
     def action_cancelar(self):
         for record in self:
