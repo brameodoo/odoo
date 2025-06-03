@@ -49,7 +49,7 @@
                         <field name="descripcion_falla" readonly="state != 'draft'"/>
                         <field name="telefono_analista" readonly="1"/>
                         <field name="fecha_solicitud" readonly="1"/>
-                        <field name="fecha_asignacion" groups="fleet_sol.res_groups_75_5492567a" options="{'readonly': 'state not in [\'draft\', \'assigned\']'}"/>
+                        <field name="fecha_asignacion" groups="fleet_sol.group_fleet_manager" options="{'readonly': 'state not in [\'draft\', \'assigned\']'}"/>
                         <field name="fecha_ingreso_taller" readonly="1"/>
                         <field name="fecha_reparacion_terminada" readonly="1"/>
                         <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
