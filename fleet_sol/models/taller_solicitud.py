@@ -69,7 +69,29 @@ class TallerSolicitud(models.Model):
         for record in self:
             if record.state != 'draft':
                 raise UserError("Solo puedes asignar fecha a solicitudes en estado Borrador.")
-            record.state = 'assigned'
+            
+            record.state = 'assigned' # Cambiar el estado a 'assigned'
+
+            # --- Lógica para enviar el correo electrónico ---
+            try:
+                # Buscar la plantilla de correo por su ID externo
+                # Asegúrate de que el ID 'fleet_sol.email_template_solicitud_asignada'
+                # coincida con el ID que le darás a tu plantilla en el XML.
+                template = self.env.ref('fleet_sol.email_template_solicitud_asignada', raise_if_not_found=False)
+
+                if template:
+                    # Enviar el correo usando la plantilla
+                    # El record.id es el ID del objeto actual sobre el que se ejecuta la acción
+                    template.send_mail(record.id, force_send=True, raise_exception=True)
+                    _logger.info(f"Correo de asignación de fecha enviado para la solicitud {record.name} al analista {record.analista_id.name}.")
+                else:
+                    _logger.warning("No se encontró la plantilla de correo 'fleet_sol.email_template_solicitud_asignada'. "
+                                    "Asegúrate de que el archivo XML de la plantilla esté cargado y el ID sea correcto.")
+            except Exception as e:
+                _logger.error(f"Error al enviar el correo de asignación de fecha para la solicitud {record.name}: {e}")
+                # Opcional: Mostrar un UserError si quieres que el usuario vea el problema en la interfaz
+                # raise UserError(_("No se pudo enviar el correo de notificación: %s") % e)
+
 
     def action_ingresar_taller(self):
         for record in self:
