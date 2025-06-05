@@ -60,7 +60,7 @@
                                 type="object"
                                 class="btn-primary"
                                 invisible="state != 'draft'"
-                                groups="fleet_sol.group_taller_admin_asignaciones"/>
+                                groups="fleet.fleet_group_manager"/>
                         <button name="action_ingresar_taller"
                                 string="Ingresar a Taller"
                                 type="object"
