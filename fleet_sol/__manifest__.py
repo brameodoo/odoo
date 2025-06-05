@@ -12,7 +12,8 @@ Cada solicitud es realizada por un analista y contiene información del vehícul
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
-        'data/mail_template.xml', # ¡Añade esta línea!        
+        'data/mail_template.xml', # ¡Añade esta línea!  
+        'data/mail_template_data.xml', # ¡Añade esta línea!        
         'views/taller_solicitud_views.xml',
     ],
     'installable': True,
