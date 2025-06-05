@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Menú raíz dentro de Fleet -->
     <menuitem id="menu_taller_solicitud_root"
               name="Solicitudes Taller"
               parent="fleet.menu_root"
               sequence="10" />
 
+    <!-- Acción principal -->
     <record id="action_taller_solicitud" model="ir.actions.act_window">
         <field name="name">Solicitudes Taller</field>
         <field name="res_model">taller.solicitud</field>
         <field name="view_mode">tree,form</field>
     </record>
 
+    <!-- Enlace de menú que llama la acción -->
     <menuitem id="menu_taller_solicitud"
               name="Solicitudes Taller"
               parent="menu_taller_solicitud_root"
               action="action_taller_solicitud"
               sequence="20"/>
 
+    <!-- Vista árbol -->
     <record id="view_taller_solicitud_tree" model="ir.ui.view">
         <field name="name">taller.solicitud.tree</field>
         <field name="model">taller.solicitud</field>
@@ -36,6 +40,7 @@
         </field>
     </record>
 
+    <!-- Vista formulario -->
     <record id="view_taller_solicitud_form" model="ir.ui.view">
         <field name="name">taller.solicitud.form</field>
         <field name="model">taller.solicitud</field>
@@ -55,22 +60,29 @@
                         <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
                     </group>
                     <footer>
+                        <!-- Botón para confirmar (asignar fecha) - Visible solo en estado 'Borrador' -->
+                        <!-- Eliminamos el atributo 'groups' aquí y confiamos en la seguridad de modelo -->
                         <button name="action_confirmar"
                                 string="Asignar Fecha"
                                 type="object"
                                 class="btn-primary"
-                                invisible="state != 'draft'"
-                                groups="fleet.fleet_group_manager"/>
+                                invisible="state != 'draft'"/>
+                        
+                        <!-- Botón para ingresar a taller - Visible solo en estado 'Fecha Asignada' -->
                         <button name="action_ingresar_taller"
                                 string="Ingresar a Taller"
                                 type="object"
                                 class="btn-primary"
                                 invisible="state != 'assigned'"/>
+                        
+                        <!-- Botón para marcar como reparado - Visible solo en estado 'Ingreso a Taller' -->
                         <button name="action_reparado"
                                 string="Reparación Terminada"
                                 type="object"
                                 class="btn-success"
                                 invisible="state != 'in_workshop'"/>
+                        
+                        <!-- Botón para cancelar - Invisible si ya está reparado o cancelado -->
                         <button name="action_cancelar"
                                 string="Cancelar"
                                 type="object"
