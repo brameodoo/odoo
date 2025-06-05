@@ -66,28 +66,28 @@
                                 string="Asignar Fecha"
                                 type="object"
                                 class="btn-primary"
-                                invisible="state != 'draft'"/>
+                                readonly="state != 'draft'"/>
                         
                         <!-- Botón para ingresar a taller - Visible solo en estado 'Fecha Asignada' -->
                         <button name="action_ingresar_taller"
                                 string="Ingresar a Taller"
                                 type="object"
                                 class="btn-primary"
-                                invisible="state != 'assigned'"/>
+                                readonly="state != 'assigned'"/>
                         
                         <!-- Botón para marcar como reparado - Visible solo en estado 'Ingreso a Taller' -->
                         <button name="action_reparado"
                                 string="Reparación Terminada"
                                 type="object"
                                 class="btn-success"
-                                invisible="state != 'in_workshop'"/>
+                                readonly="state != 'in_workshop'"/>
                         
                         <!-- Botón para cancelar - Invisible si ya está reparado o cancelado -->
                         <button name="action_cancelar"
                                 string="Cancelar"
                                 type="object"
                                 class="btn-secondary"
-                                invisible="state in ['repaired', 'cancel']"/>
+                                readonly="state in ['repaired', 'cancel']"/>
                     </footer>
                 </sheet>
             </form>
