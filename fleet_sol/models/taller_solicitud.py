@@ -78,6 +78,15 @@ class TallerSolicitud(models.Model):
             record.state = 'in_workshop'
             record.fecha_ingreso_taller = fields.Datetime.now()
 
+            # --- NUEVA FUNCIONALIDAD: Enviar correo al analista ---
+            # Asegúrate que 'fleet_sol' sea el nombre técnico de tu módulo
+            template_id = self.env.ref('fleet_sol.email_template_ingreso_taller_analista').id
+            if template_id:
+                # 'record.id' se refiere al ID de la solicitud actual
+                self.env['mail.template'].browse(template_id).send_mail(record.id, force_send=True)
+            # --- FIN NUEVA FUNCIONALIDAD ---
+
+
     def action_reparado(self):
         for record in self:
             if record.state != 'in_workshop':
