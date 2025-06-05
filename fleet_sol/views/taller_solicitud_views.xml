@@ -46,6 +46,39 @@
         <field name="model">taller.solicitud</field>
         <field name="arch" type="xml">
             <form string="Solicitud de Taller">
+                <!-- Sección de HEADER: Aquí se colocan los botones de flujo de trabajo -->
+                <header>
+                    <!-- Botón para confirmar (asignar fecha) - De solo lectura si el estado NO es 'Borrador' -->
+                    <button name="action_confirmar"
+                            string="Asignar Fecha"
+                            type="object"
+                            class="oe_highlight" <!-- Clase para resaltar el botón principal de la etapa -->
+                            readonly="state != 'draft'"/>
+                    
+                    <!-- Botón para ingresar a taller - De solo lectura si el estado NO es 'Fecha Asignada' -->
+                    <button name="action_ingresar_taller"
+                            string="Ingresar a Taller"
+                            type="object"
+                            class="oe_highlight"
+                            readonly="state != 'assigned'"/>
+                    
+                    <!-- Botón para marcar como reparado - De solo lectura si el estado NO es 'Ingreso a Taller' -->
+                    <button name="action_reparado"
+                            string="Reparación Terminada"
+                            type="object"
+                            class="oe_highlight"
+                            readonly="state != 'in_workshop'"/>
+                    
+                    <!-- Botón para cancelar - De solo lectura si ya está reparado o cancelado -->
+                    <button name="action_cancelar"
+                            string="Cancelar"
+                            type="object"
+                            readonly="state in ['repaired', 'cancel']"/>
+                    
+                    <!-- El statusbar suele ir en el header también para indicar el progreso -->
+                    <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
+                </header>
+
                 <sheet>
                     <group>
                         <field name="name" readonly="1"/>
@@ -57,38 +90,8 @@
                         <field name="fecha_asignacion" groups="fleet.fleet_group_manager" options="{'readonly': 'state not in [\'draft\', \'assigned\']'}"/>
                         <field name="fecha_ingreso_taller" readonly="1"/>
                         <field name="fecha_reparacion_terminada" readonly="1"/>
-                        <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
                     </group>
-                    <footer>
-                        <!-- Botón para confirmar (asignar fecha) - Visible solo en estado 'Borrador' -->
-                        <!-- Eliminamos el atributo 'groups' aquí y confiamos en la seguridad de modelo -->
-                        <button name="action_confirmar"
-                                string="Asignar Fecha"
-                                type="object"
-                                class="btn-primary"
-                                readonly="state != 'draft'"/>
-                        
-                        <!-- Botón para ingresar a taller - Visible solo en estado 'Fecha Asignada' -->
-                        <button name="action_ingresar_taller"
-                                string="Ingresar a Taller"
-                                type="object"
-                                class="btn-primary"
-                                readonly="state != 'assigned'"/>
-                        
-                        <!-- Botón para marcar como reparado - Visible solo en estado 'Ingreso a Taller' -->
-                        <button name="action_reparado"
-                                string="Reparación Terminada"
-                                type="object"
-                                class="btn-success"
-                                readonly="state != 'in_workshop'"/>
-                        
-                        <!-- Botón para cancelar - Invisible si ya está reparado o cancelado -->
-                        <button name="action_cancelar"
-                                string="Cancelar"
-                                type="object"
-                                class="btn-secondary"
-                                readonly="state in ['repaired', 'cancel']"/>
-                    </footer>
+                    <!-- Eliminamos el footer ya que los botones están en el header -->
                 </sheet>
             </form>
         </field>
