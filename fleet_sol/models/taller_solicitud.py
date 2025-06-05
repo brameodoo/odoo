@@ -1,5 +1,11 @@
-from odoo import models, fields, api
+# -*- coding: utf-8 -*-
+# models/taller_solicitud.py
+
+from odoo import models, fields, api, _ # Asegúrate de importar _ para traducciones
 from odoo.exceptions import UserError
+import logging # Importar el módulo de logging
+
+_logger = logging.getLogger(__name__) # ¡Esta línea faltaba o estaba mal colocada!
 
 class TallerSolicitud(models.Model):
     _name = 'taller.solicitud'
@@ -75,13 +81,10 @@ class TallerSolicitud(models.Model):
             # --- Lógica para enviar el correo electrónico ---
             try:
                 # Buscar la plantilla de correo por su ID externo
-                # Asegúrate de que el ID 'fleet_sol.email_template_solicitud_asignada'
-                # coincida con el ID que le darás a tu plantilla en el XML.
                 template = self.env.ref('fleet_sol.email_template_solicitud_asignada', raise_if_not_found=False)
 
                 if template:
                     # Enviar el correo usando la plantilla
-                    # El record.id es el ID del objeto actual sobre el que se ejecuta la acción
                     template.send_mail(record.id, force_send=True, raise_exception=True)
                     _logger.info(f"Correo de asignación de fecha enviado para la solicitud {record.name} al analista {record.analista_id.name}.")
                 else:
@@ -92,22 +95,12 @@ class TallerSolicitud(models.Model):
                 # Opcional: Mostrar un UserError si quieres que el usuario vea el problema en la interfaz
                 # raise UserError(_("No se pudo enviar el correo de notificación: %s") % e)
 
-
     def action_ingresar_taller(self):
         for record in self:
             if record.state != 'assigned':
                 raise UserError("Solo puedes marcar como 'Ingreso a Taller' solicitudes con fecha asignada.")
             record.state = 'in_workshop'
             record.fecha_ingreso_taller = fields.Datetime.now()
-
-            # --- NUEVA FUNCIONALIDAD: Enviar correo al analista ---
-            # Asegúrate que 'fleet_sol' sea el nombre técnico de tu módulo
-            template_id = self.env.ref('fleet_sol.email_template_ingreso_taller_analista').id
-            if template_id:
-                # 'record.id' se refiere al ID de la solicitud actual
-                self.env['mail.template'].browse(template_id).send_mail(record.id, force_send=True)
-            # --- FIN NUEVA FUNCIONALIDAD ---
-
 
     def action_reparado(self):
         for record in self:
