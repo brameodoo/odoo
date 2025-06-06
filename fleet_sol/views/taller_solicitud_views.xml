@@ -52,7 +52,8 @@
                     <button name="action_confirmar"
                             string="Asignar Fecha"
                             type="object"
-                            class="oe_highlight" /> <!-- Clase para resaltar el botón principal de la etapa -->
+                            class="oe_highlight" 
+                            invisible="state != 'draft'"  groups="fleet.fleet_group_manager"/> <!-- Clase para resaltar el botón principal de la etapa -->
                     
                     <!-- Botón para ingresar a taller - De solo lectura si el estado NO es 'Fecha Asignada' -->
                     <button name="action_ingresar_taller"
