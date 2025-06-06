@@ -65,6 +65,36 @@ class TallerSolicitud(models.Model):
         ('cancel', 'Cancelado')
     ], string='Estado', default='draft', tracking=True)
 
+        # Nuevos campos para los testigos del tablero
+    check_engine = fields.Boolean(
+        string='Check Engine',
+        help='Indica si el testigo Check Engine está encendido.'
+    )
+    nivel_aceite = fields.Boolean(
+        string='Testigo Nivel de Aceite',
+        help='Indica si el testigo de Nivel de Aceite está encendido.'
+    )
+    temperatura_auto = fields.Boolean(
+        string='Testigo Temperatura Auto',
+        help='Indica si el testigo de Temperatura del Auto está encendido.'
+    )
+    bateria_auto = fields.Boolean(
+        string='Testigo Batería del Auto',
+        help='Indica si el testigo de Batería del Auto está encendido.'
+    )
+    sensor_abs = fields.Boolean(
+        string='Testigo Sensor ABS',
+        help='Indica si el testigo del Sensor ABS está encendido.'
+    )
+    direccion_volante = fields.Boolean(
+        string='Testigo Dirección (volante)',
+        help='Indica si el testigo de Dirección (volante) está encendido.'
+    )
+    frenos = fields.Boolean(
+        string='Testigo Frenos',
+        help='Indica si el testigo de Frenos está encendido.'
+    )
+
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
