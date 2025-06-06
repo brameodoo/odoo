@@ -36,6 +36,14 @@
                 <field name="fecha_ingreso_taller"/>
                 <field name="fecha_reparacion_terminada"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'assigned'" decoration-success="state == 'repaired'" decoration-danger="state == 'cancel'"/>
+
+                <field name="check_engine"/>
+                <field name="nivel_aceite"/>
+                <field name="temperatura_auto"/>
+                <field name="bateria_auto"/>
+                <field name="sensor_abs"/>
+                <field name="direccion_volante"/>
+                <field name="frenos"/>
             </tree>
         </field>
     </record>
