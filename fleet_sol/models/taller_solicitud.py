@@ -95,6 +95,13 @@ class TallerSolicitud(models.Model):
         help='Indica si el testigo de Frenos está encendido.'
     )
 
+        # NUEVO CAMPO: Distrito del Vehículo
+    distrito_vehiculo = fields.Selection(
+        related='vehiculo_id.x_studio_distrito_2', # Aquí es donde se relaciona con el campo del vehículo
+        string='Distrito del Vehículo',
+        readonly=True # Es de solo lectura porque toma el valor del vehículo
+    )
+
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
