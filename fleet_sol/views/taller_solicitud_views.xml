@@ -35,6 +35,7 @@
                 <field name="fecha_asignacion"/>
                 <field name="fecha_ingreso_taller"/>
                 <field name="fecha_reparacion_terminada"/>
+                <field name="distrito_vehiculo"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'assigned'" decoration-success="state == 'repaired'" decoration-danger="state == 'cancel'"/>
 
                 <field name="check_engine"/>
@@ -98,6 +99,7 @@
                         <field name="fecha_asignacion" groups="fleet.fleet_group_manager" options="{'readonly': 'state not in [\'draft\', \'assigned\']'}"/>
                         <field name="fecha_ingreso_taller" readonly="1"/>
                         <field name="fecha_reparacion_terminada" readonly="1"/>
+                        <field name="distrito_vehiculo" readonly="1"/>
                     </group>
 
                     <group string="Estado de Testigos del Tablero">
