@@ -91,6 +91,16 @@
                         <field name="fecha_ingreso_taller" readonly="1"/>
                         <field name="fecha_reparacion_terminada" readonly="1"/>
                     </group>
+
+                    <group string="Estado de Testigos del Tablero">
+                        <field name="check_engine" readonly="state != 'draft'"/>
+                        <field name="nivel_aceite" readonly="state != 'draft'"/>
+                        <field name="temperatura_auto" readonly="state != 'draft'"/>
+                        <field name="bateria_auto" readonly="state != 'draft'"/>
+                        <field name="sensor_abs" readonly="state != 'draft'"/>
+                        <field name="direccion_volante" readonly="state != 'draft'"/>
+                        <field name="frenos" readonly="state != 'draft'"/>
+                    </group>
                     <!-- Eliminamos el footer ya que los botones están en el header -->
                 </sheet>
             </form>
