@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_fleet_restrict" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.fleet.restrict</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="fleet.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='fleet_settings']" position="after">
+                <h2>Restricciones de Etapas Kanban de Flota</h2>
+                <div class="row mt16 o_settings_container" name="fleet_kanban_restrictions_settings">
+                    <div class="col-12 col-lg-6 o_setting_box" id="fleet_kanban_restrictions_box">
+                        <div class="o_setting_left_pane">
+                            <field name="fleet_restricted_stage_allowed_groups" widget="many2many_tags"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="fleet_restricted_stage_allowed_groups"/>
+                            <div class="text-muted">
+                                Selecciona los grupos de usuarios que tienen permiso para mover vehículos a etapas marcadas como "Etapa Restringida (para arrastrar)".
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

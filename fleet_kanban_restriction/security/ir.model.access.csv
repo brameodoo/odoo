@@ -1,0 +1,3 @@
+# my_fleet_restrict_stages/security/ir.model.access.csv
+id,name,model_id,group_id,perm_read,perm_write,perm_create,perm_unlink
+access_fleet_vehicle_stage_is_restricted_stage,fleet.vehicle.stage.is_restricted_stage,model_fleet_vehicle_stage,base.group_user,1,1,1,1

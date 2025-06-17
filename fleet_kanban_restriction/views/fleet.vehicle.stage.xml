@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="fleet_vehicle_stage_form_view_inherit" model="ir.ui.view">
+        <field name="name">fleet.vehicle.stage.form.view.inherit</field>
+        <field name="model">fleet.vehicle.stage</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_stage_form_view"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="is_restricted_stage"/>
+            </field>
+        </field>
+    </record>
+</odoo>
