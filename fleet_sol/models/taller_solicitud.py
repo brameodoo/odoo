@@ -58,8 +58,8 @@ class TallerSolicitud(models.Model):
         tracking=True
     )
     state = fields.Selection([
-        ('draft', 'Borrador'),
-        ('assigned', 'Fecha Asignada'),
+        ('draft', 'Abierto'),
+        ('assigned', 'Fecha de Cita'),
         ('in_workshop', 'Ingreso a Taller'),
         ('repaired', 'Reparado'),
         ('cancel', 'Cancelado')
