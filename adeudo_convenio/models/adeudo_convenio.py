@@ -24,7 +24,6 @@ class AdeudoConvenio(models.Model):
     # --- INFORMACIÓN DEL COLABORADOR ---
     employee_id = fields.Many2one('hr.employee', string='Colaborador', required=True, tracking=True)
     
-    # Campo relacionado para el puesto
     job_id = fields.Many2one(
         'hr.job', 
         string='Puesto', 
@@ -33,7 +32,6 @@ class AdeudoConvenio(models.Model):
         store=True
     )
 
-    # Nuevo campo para el estatus del colaborador
     estatus_colaborador = fields.Selection([
         ('activo', 'Activo'),
         ('baja', 'Baja')
@@ -160,6 +158,49 @@ class AdeudoConvenio(models.Model):
     notas = fields.Text(string='Observaciones')
 
     # -----------------------------------------------------------------
+    # ONCHANGES Y VALIDACIONES (LÓGICA ORIGINAL RESTAURADA)
+    # -----------------------------------------------------------------
+
+    @api.onchange('monto_total')
+    def _onchange_monto_total(self):
+        """Aplica el monto por defecto de 1240.00 o el total si es menor."""
+        if self.monto_total > 0:
+            self.monto_descuento_quincenal = min(self.monto_total, MAX_DESCUENTO_QUINCENAL)
+        else:
+            self.monto_descuento_quincenal = 0
+
+    @api.onchange('numero_pagos_manual')
+    def _onchange_numero_pagos_manual(self):
+        """Recalcula el monto quincenal si se define un número de pagos manualmente."""
+        if self.numero_pagos_manual > 0 and self.monto_total > 0:
+            self.monto_descuento_quincenal = round(self.monto_total / self.numero_pagos_manual, 2)
+        elif self.monto_total > 0:
+            self._onchange_monto_total()
+
+    @api.onchange('fecha_incidencia')
+    def _onchange_fecha_incidencia(self):
+        """Sugiere fecha de inicio basada en la incidencia."""
+        if self.fecha_incidencia:
+            dia = self.fecha_incidencia.day
+            mes = self.fecha_incidencia.month
+            ano = self.fecha_incidencia.year
+            if dia <= 15:
+                self.fecha_inicio = date(ano, mes, 15)
+            else:
+                ultimo_dia = calendar.monthrange(ano, mes)[1]
+                self.fecha_inicio = date(ano, mes, ultimo_dia)
+
+    @api.constrains('fecha_inicio')
+    def _check_fecha_inicio_quincena(self):
+        """Valida que la fecha sea 15 o fin de mes."""
+        for rec in self:
+            if rec.fecha_inicio:
+                dia = rec.fecha_inicio.day
+                ultimo_dia = calendar.monthrange(rec.fecha_inicio.year, rec.fecha_inicio.month)[1]
+                if dia not in [15, ultimo_dia]:
+                    raise ValidationError("La fecha de inicio de descuento debe ser el día 15 o el último día del mes.")
+
+    # -----------------------------------------------------------------
     # MÉTODOS DE ACCIÓN (BOTONES)
     # -----------------------------------------------------------------
 
@@ -187,7 +228,8 @@ class AdeudoConvenio(models.Model):
                     last_day = calendar.monthrange(ultima_fecha.year, ultima_fecha.month)[1]
                     fecha_actual = date(ultima_fecha.year, ultima_fecha.month, last_day)
                 else:
-                    fecha_actual = (ultima_fecha + timedelta(days=20)).replace(day=15)
+                    next_month = ultima_fecha + timedelta(days=20)
+                    fecha_actual = date(next_month.year, next_month.month, 15)
 
             # 3. Creación de líneas
             pagos_list = []
@@ -215,7 +257,8 @@ class AdeudoConvenio(models.Model):
                     last_day = calendar.monthrange(fecha_actual.year, fecha_actual.month)[1]
                     fecha_actual = date(fecha_actual.year, fecha_actual.month, last_day)
                 else:
-                    fecha_actual = (fecha_actual + timedelta(days=20)).replace(day=15)
+                    next_date = fecha_actual + timedelta(days=20)
+                    fecha_actual = date(next_date.year, next_date.month, 15)
 
             # 4. Ajuste de picos menores a 500 pesos
             if len(pagos_list) >= 2:
@@ -228,11 +271,20 @@ class AdeudoConvenio(models.Model):
         return True
 
     def action_confirmar(self):
-        """Pasa el convenio a estado En Proceso."""
+        """Pasa el convenio a estado En Proceso y genera el PDF."""
         for rec in self:
             if not rec.linea_pago_ids:
                 rec.action_generar_plan_pagos()
-            rec.write({'estado': 'en_proceso'})
+            
+            # Generar el PDF y guardarlo en el campo binario
+            report = self.env.ref('adeudo_convenio.action_report_adeudo_convenio')
+            pdf_content, content_type = report.sudo()._render_qweb_pdf(report.report_name, res_ids=rec.ids)
+            
+            rec.write({
+                'estado': 'en_proceso',
+                'convenio_generado': base64.b64encode(pdf_content),
+                'convenio_filename': f"Convenio_{rec.name.replace('/', '_')}.pdf"
+            })
         return True
 
     def action_resetear_borrador(self):
@@ -240,11 +292,11 @@ class AdeudoConvenio(models.Model):
         self.write({'estado': 'borrador'})
 
     def action_print_report(self):
-        """Lanza la acción de impresión del reporte."""
+        """Lanza la acción de impresión del reporte para el usuario."""
         return self.env.ref('adeudo_convenio.action_report_adeudo_convenio').report_action(self)
 
     # -----------------------------------------------------------------
-    # CÁLCULOS COMPUTADOS Y ONCHANGES
+    # CÁLCULOS COMPUTADOS Y OTROS
     # -----------------------------------------------------------------
 
     @api.depends('monto_total', 'monto_descuento_quincenal')
@@ -262,6 +314,9 @@ class AdeudoConvenio(models.Model):
             rec.total_abonado = abonado
             rec.monto_pendiente = rec.monto_total - abonado
             rec.progreso_pago_porcentaje = (abonado / rec.monto_total * 100) if rec.monto_total > 0 else 0
+            
+            if rec.monto_pendiente <= 0.01 and rec.estado == 'en_proceso' and rec.monto_total > 0:
+                rec.estado = 'cerrado'
 
     @api.depends('monto_total')
     def _compute_monto_total_letras(self):
