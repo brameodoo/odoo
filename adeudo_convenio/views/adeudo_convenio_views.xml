@@ -101,4 +101,25 @@
             </form>
         </field>
     </record>
+
+    <!-- Acción de Ventana (Restaurada) -->
+    <record id="action_adeudo_convenio" model="ir.actions.act_window">
+        <field name="name">Convenios de Adeudo</field>
+        <field name="res_model">adeudo.convenio</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Menús (Restaurados) -->
+    <menuitem id="menu_adeudo_convenio_root"
+              name="Gestión de Adeudos"
+              parent="hr.menu_hr_root"
+              sequence="50"
+              groups="hr.group_hr_manager"/>
+              
+    <menuitem id="menu_adeudo_convenio_list"
+              name="Convenios"
+              parent="menu_adeudo_convenio_root"
+              action="action_adeudo_convenio"
+              sequence="10"
+              groups="hr.group_hr_manager"/>
 </odoo>
