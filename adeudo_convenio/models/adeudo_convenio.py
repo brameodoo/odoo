@@ -158,7 +158,7 @@ class AdeudoConvenio(models.Model):
     notas = fields.Text(string='Observaciones')
 
     # -----------------------------------------------------------------
-    # ONCHANGES Y VALIDACIONES (LÓGICA ORIGINAL RESTAURADA)
+    # ONCHANGES Y VALIDACIONES
     # -----------------------------------------------------------------
 
     @api.onchange('monto_total')
@@ -296,6 +296,38 @@ class AdeudoConvenio(models.Model):
         return self.env.ref('adeudo_convenio.action_report_adeudo_convenio').report_action(self)
 
     # -----------------------------------------------------------------
+    # MÉTODOS PARA EL REPORTE QWEB (RESTABLECIDOS)
+    # -----------------------------------------------------------------
+
+    def get_monto_en_letras(self):
+        """Convierte el monto total a texto para el reporte."""
+        self.ensure_one()
+        if num2words:
+            try:
+                pesos = int(self.monto_total)
+                centavos = int(round((self.monto_total - pesos) * 100))
+                texto_pesos = num2words(pesos, lang='es').upper()
+                currency_name = self.currency_id.name.upper() or 'PESOS M.N.'
+                if currency_name == 'MXN':
+                    currency_name = 'PESOS M.N.'
+                return f"{texto_pesos} {currency_name} {centavos:02d}/100"
+            except Exception as e:
+                return f"ERROR: {e}"
+        else:
+            return "BIBLIOTECA 'num2words' NO INSTALADA"
+
+    def get_motivo_display(self):
+        """Obtiene la etiqueta legible del motivo."""
+        self.ensure_one()
+        return dict(self._fields['motivo'].selection).get(self.motivo, '')
+
+    def get_fecha_reporte(self):
+        """Formatea la fecha para el reporte."""
+        self.ensure_one()
+        report_date = self.fecha_incidencia or self.create_date or date.today()
+        return f"{report_date.day} de {report_date.strftime('%B')} del {report_date.year}"
+
+    # -----------------------------------------------------------------
     # CÁLCULOS COMPUTADOS Y OTROS
     # -----------------------------------------------------------------
 
@@ -321,10 +353,7 @@ class AdeudoConvenio(models.Model):
     @api.depends('monto_total')
     def _compute_monto_total_letras(self):
         for rec in self:
-            if num2words and rec.monto_total:
-                rec.monto_total_letras = num2words(rec.monto_total, lang='es').upper() + " PESOS"
-            else:
-                rec.monto_total_letras = "N/A"
+            rec.monto_total_letras = rec.get_monto_en_letras()
 
     @api.model_create_multi
     def create(self, vals_list):
