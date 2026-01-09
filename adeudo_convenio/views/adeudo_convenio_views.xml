@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Tree (Lista) -->
+    <record id="view_tree_adeudo_convenio" model="ir.ui.view">
+        <field name="name">adeudo.convenio.tree</field>
+        <field name="model">adeudo.convenio</field>
+        <field name="arch" type="xml">
+            <tree string="Convenios de Adeudo">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="motivo"/>
+                <field name="monto_total" sum="Total Adeudado"/>
+                <field name="monto_pendiente" sum="Total Pendiente"/>
+                <field name="progreso_pago_porcentaje" widget="progressbar" string="Progreso"/>
+                <field name="estado"/>
+                <!-- Nuevo campo en la lista (oculto por defecto) -->
+                <field name="estado_convenio_firma" widget="badge" decoration-success="estado_convenio_firma == 'si'" decoration-warning="estado_convenio_firma == 'no'" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Form (Versión Final v16 - Incluye Distrito) -->
+    <record id="view_form_adeudo_convenio" model="ir.ui.view">
+        <field name="name">adeudo.convenio.form.v16</field>
+        <field name="model">adeudo.convenio</field>
+        <field name="arch" type="xml">
+            <form string="Convenio de Adeudo (v16)">
+                <header>
+                    <field name="estado" widget="statusbar" statusbar_visible="borrador,en_proceso,cerrado"/>
+
+                    <button name="action_generar_plan_pagos" type="object" string="Generar/Recalcular Plan" class="btn-primary" icon="fa-cogs"/>
+                    <button name="action_confirmar" type="object" string="Confirmar y Pasar a Proceso" class="btn-primary"/>
+                    <button name="action_print_report" type="object" string="Imprimir Convenio" class="oe_highlight" icon="fa-print"/>
+                    <button name="action_resetear_borrador" type="object" string="Resetear a Borrador" icon="fa-undo"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Información General">
+                            <field name="employee_id"/>
+                            <field name="numero_empleado"/>
+                            <field name="responsable_id"/>
+                            <field name="analista_id"/>
+                            <field name="motivo"/>
+                            <!-- NUEVO CAMPO: Distrito -->
+                            <field name="distrito"/>
+                        </group>
+                        <group string="Detalles del Adeudo">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="monto_total"/>
+                            <field name="fecha_incidencia"/>
+                            <field name="fecha_inicio"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Cálculo de Pagos" col="4">
+                        <field name="numero_pagos_manual" help="Define un número de quincenas y el monto se calculará a la inversa."/>
+                        <field name="monto_descuento_quincenal" help="Modifica este valor para que el sistema recalcule el número de pagos."/>
+                        <field name="numero_pagos_sugerido" readonly="1"/>
+                    </group>
+
+                    <group string="Progreso del Convenio">
+                        <field name="progreso_pago_porcentaje" widget="progressbar"/>
+                        <field name="total_abonado" readonly="1"/>
+                        <field name="monto_pendiente" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Plan de Pagos" name="plan_pagos">
+                            <field name="linea_pago_ids" readonly="0">
+                                <tree editable="bottom" create="0" delete="0">
+                                    <field name="numero_pago" readonly="1" force_save="1"/>
+                                    <field name="fecha_pago" readonly="1" force_save="1"/>
+                                    <field name="monto" readonly="1" force_save="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="estado_pago" readonly="0" decoration-success="estado_pago == 'pagado'" decoration-info="estado_pago == 'pendiente'" decoration-bf="1"/>
+                                    <field name="comentario" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Documentos" name="documentos">
+                            <group>
+                                <field name="convenio_generado" readonly="1" filename="convenio_filename"/>
+                                <field name="convenio_filename" invisible="1"/>
+                                
+                                <separator string="Control de Firmas"/>
+                                <field name="convenio_firmado" filename="convenio_firmado_filename"/>
+                                <field name="convenio_firmado_filename" invisible="1"/>
+                                
+                                <field name="estado_convenio_firma" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                        </page>
+                        <page string="Notas Adicionales" name="notas">
+                            <field name="notas"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_adeudo_convenio" model="ir.actions.act_window">
+        <field name="name">Convenios de Adeudo</field>
+        <field name="res_model">adeudo.convenio</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem id="menu_adeudo_convenio_root"
+              name="Gestión de Adeudos"
+              parent="hr.menu_hr_root"
+              sequence="50"
+              groups="hr.group_hr_manager"/>
+              
+    <menuitem id="menu_adeudo_convenio_list"
+              name="Convenios"
+              parent="menu_adeudo_convenio_root"
+              action="action_adeudo_convenio"
+              sequence="10"
+              groups="hr.group_hr_manager"/>
+</odoo>

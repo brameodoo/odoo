@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 
+            ACCIÓN DE REPORTE (IR.ACTIONS.REPORT)
+            Define la acción de impresión que se vinculará al modelo 'adeudo.convenio'.
+        -->
+        <record id="action_report_adeudo_convenio" model="ir.actions.report">
+            <field name="name">Convenio de Adeudo (PDF)</field>
+            <field name="model">adeudo.convenio</field>
+            <field name="report_type">qweb-pdf</field>
+            <!-- 
+                El 'report_name' debe coincidir con el 'id' de la plantilla de abajo, 
+                incluyendo el nombre del módulo.
+            -->
+            <field name="report_name">adeudo_convenio.report_adeudo_convenio_template</field>
+            <field name="report_file">adeudo_convenio.report_adeudo_convenio_template</field>
+            <!-- 
+                binding_model_id y binding_type añaden la acción "Imprimir" 
+                automáticamente en la barra lateral del modelo.
+            -->
+            <field name="binding_model_id" ref="model_adeudo_convenio"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Convenio_Adeudo_%s' % (object.name or 'Nuevo').replace('/', '_')</field>
+        </record>
+
+        <!-- 
+            PLANTILLA QWEB (EL DISEÑO DEL PDF)
+            id debe coincidir con el 'report_name' de arriba.
+        -->
+        <template id="report_adeudo_convenio_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <style>
+                                .page {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 11pt;
+                                    line-height: 1.5;
+                                }
+                                h4 {
+                                    font-size: 12pt;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    text-transform: uppercase;
+                                    margin-top: 20px;
+                                    margin-bottom: 20px;
+                                }
+                                p, li {
+                                    text-align: justify;
+                                    margin-bottom: 12px;
+                                }
+                                .clausula {
+                                    font-weight: bold;
+                                }
+                                .uppercase {
+                                    text-transform: uppercase;
+                                }
+                                table.amortizacion {
+                                    width: 80%;
+                                    margin: 20px auto;
+                                    border-collapse: collapse;
+                                }
+                                table.amortizacion th,
+                                table.amortizacion td {
+                                    border: 1px solid black;
+                                    padding: 8px;
+                                    text-align: center;
+                                }
+                                table.amortizacion th {
+                                    background-color: #f2f2f2;
+                                }
+                                table.firmas {
+                                    width: 100%;
+                                    margin-top: 80px;
+                                    border: none;
+                                }
+                                table.firmas td {
+                                    width: 50%;
+                                    text-align: center;
+                                    border: none;
+                                    padding-top: 50px;
+                                    border-top: 1px solid black;
+                                }
+                            </style>
+
+                            <h4>Convenio de Reconocimiento de Adeudo y Pago</h4>
+
+                            <p>
+                                CONVENIO DE RECONOCIMIENTO DE ADEUDO Y PAGO QUE CELEBRAN POR UNA PARTE
+                                <strong><t t-esc="doc.company_id.name or 'CANAL DE CONECTIVIDAD DIGITAL S.A. DE C.V'"/></strong>,
+                                EN LO SUCESIVO "EL ACREEDOR", REPRESENTADO EN ESTE ACTO POR
+                                CLAUDIA REYES CORTES; POR LA OTRA PARTE EL/LA SR./SRA.
+                                <strong><t t-esc="doc.employee_id.name" class="uppercase"/></strong>,
+                                POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ "EL DEUDOR" A QUIENES EN CONJUNTO SE
+                                LES DENOMINARÁ "LAS PARTES", Y QUIENES ESTÁN DE ACUERDO EN SUJETARSE AL TENOR DE LOS
+                                SIGUIENTES DECLARACIONES Y CLÁUSULAS:
+                            </p>
+
+                            <h4>Declaraciones</h4>
+
+                            <p class="clausula">I. Declara EL ACREEDOR, por conducto de su representante legal:</p>
+                            <ul>
+                                <li>a. Que su representada es una Sociedad Anónima de Capital Variable constituida de conformidad con las Leyes de la República Mexicana.</li>
+                                <li>b. Que el suscrito tiene plena capacidad legal y facultades necesarias para celebrar el presente Convenio en su representación, facultades que a la fecha no le han sido revocadas ni limitadas en forma alguna.</li>
+                                <li>c. Que, a la fecha de celebración del presente instrumento, EL DEUDOR tiene una deuda para con EL ACREEDOR por la cantidad de <strong>$<t t-esc="'{:,.2f}'.format(doc.monto_total)"/> (<span class="uppercase"><t t-esc="doc.get_monto_en_letras()"/></span>)</strong>.</li>
+                            </ul>
+
+                            <p class="clausula">II. Declara el "DEUDOR", por su propio derecho:</p>
+                            <ul>
+                                <li>a. Que es una persona física, mayor de edad, con pleno uso de sus facultades y con plena capacidad natural y legal para obligarse y convenir en la forma y términos del presente Convenio;</li>
+                                <li>
+                                    <!--
+                                        ¡CORRECCIÓN!
+                                        Usamos el campo 'employee_address' que creamos en el .py
+                                        en lugar del 'address_home_id' que no existe.
+                                    -->
+                                    b. Que su domicilio se encuentra ubicado en <t t-esc="doc.employee_address or 'DOMICILIO DEL COLABORADOR'"/>.
+                                </li>
+                                <li>c. Que, a la fecha de celebración del presente instrumento, EL DEUDOR tiene una deuda con el ACREEDOR por la cantidad de <strong>$<t t-esc="'{:,.2f}'.format(doc.monto_total)"/> (<span class="uppercase"><t t-esc="doc.get_monto_en_letras()"/></span>)</strong>.</li>
+                            </ul>
+
+                            <p class="clausula">III. Declaran LAS PARTES en conjunto:</p>
+                            <ul>
+                                <li>a. Que se reconocen mutuamente la personalidad con las que comparecen a la celebración del presente Convenio.</li>
+                                <li>b. Que, en la celebración de este Convenio, no existe vicio del consentimiento de índole alguno, por lo que están conformes en sujetarse al tenor de las siguientes:</li>
+                            </ul>
+
+                            <h4>Cláusulas</h4>
+
+                            <p>
+                                <span class="clausula">PRIMERA.- RECONOCIMIENTO DE ADEUDO.</span>
+                                EI DEUDOR, reconoce a la firma del presente convenio, adeudar a EL ACREEDOR, la cantidad
+                                <strong>$<t t-esc="'{:,.2f}'.format(doc.monto_total)"/> (<span class="uppercase"><t t-esc="doc.get_monto_en_letras()"/></span>)</strong> (la "DEUDA").
+                                Por concepto de <t t-esc="doc.get_motivo_display() or 'Concepto del Adeudo'"/>.
+                            </p>
+                            <p>
+                                <span class="clausula">SEGUNDA.- FORMA DE PAGO.</span>
+                                Con motivo del presente Convenio, EL DEUDOR acuerda pagar a EL ACREEDOR la DEUDA,
+                                de conformidad con la siguiente tabla de amortización:
+                            </p>
+
+                            <table class="amortizacion">
+                                <thead>
+                                    <tr>
+                                        <th>PAGO</th>
+                                        <th>FECHA DE PAGO</th>
+                                        <th>MONTO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.linea_pago_ids" t-as="line">
+                                        <tr t-if="line.estado_pago != 'omitido'">
+                                            <td><t t-esc="line.numero_pago"/></td>
+                                            <td><span t-field="line.fecha_pago" t-options='{"format": "dd/MM/yyyy"}'/></td>
+                                            <td>$<t t-esc="'{:,.2f}'.format(line.monto)"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL</td>
+                                        <td style="font-weight: bold;">$<t t-esc="'{:,.2f}'.format(doc.monto_total)"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p>
+                                <span class="clausula">TERCERA. - PAGOS ANTICIPADOS.</span>
+                                Las partes acuerdan que EL DEUDOR podrá, en todo momento, realizar pagos
+                                anticipados, con el objeto de liquidar, lo antes posible, la DEUDA.
+                            </p>
+                            <p>
+                                <span class="clausula">CUARTA.- EFECTOS DEL PAGO.</span>
+                                Una vez que EL DEUDOR realice en su totalidad de los pagos mencionados en la
+                                Cláusula Segunda anterior, EL ACREEDOR otorgará el finiquito más amplio que en derecho proceda.
+                            </p>
+                            <p>
+                                <span class="clausula">QUINTA.- INCUMPLIMIENTO.</span>
+                                Para el caso de incumplimiento en las obligaciones de pago establecidas en el presente
+                                Convenio, EL ACREEDOR se reserva el derecho de ejercer las acciones legales pertinentes.
+                            </p>
+                            <p>
+                                <span class="clausula">SEXTA.- VIGENCIA.</span>
+                                Las partes acuerdan que la vigencia del presente Convenio será a partir de la firma de este y hasta
+                                la liquidación total de la DEUDA.
+                            </p>
+                            <p>
+                                <span class="clausula">DÉCIMA PRIMERA. - JURISDICCIÓN.</span>
+                                En caso de controversia, las partes se someten expresamente a la Jurisdicción de los Tribunales del Fuero Común de la Ciudad de México.
+                            </p> <!-- ¡CORRECCIÓN! Esta era la etiqueta </s_col> que causaba el error. -->
+                            <p>
+                                Leído que fue el presente contrato y enteradas las partes del contenido y alcances de todas y cada una de las cláusulas
+                                que en el mismo se precisan, lo firman por cuadriplicado, en la Ciudad de México, el día
+                                <strong><t t-esc="doc.get_fecha_reporte() or '01 de octubre del 2025'"/>.</strong>
+                            </p>
+
+                            <table class="firmas">
+                                <tr>
+                                    <td>"EL ACREEDOR"</td>
+                                    <td>"EL DEUDOR"</td>
+                               </tr>
+                                <tr>
+                                    <td><t t-esc="doc.company_id.name or 'CANAL DE CONECTIVIDAD DIGITAL S.A. DE C.V'"/></td>
+                                    <td><t t-esc="doc.employee_id.name" class="uppercase"/></td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Secuencia para generar el folio de los convenios de adeudo -->
+        <record id="seq_adeudo_convenio" model="ir.sequence">
+            <field name="name">Secuencia de Convenio de Adeudo</field>
+            <field name="code">adeudo.convenio</field>
+            <field name="prefix">CONV/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

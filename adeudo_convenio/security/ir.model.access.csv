@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_adeudo_convenio_manager,Access Adeudo Convenio Manager,model_adeudo_convenio,hr.group_hr_manager,1,1,1,1
+access_adeudo_convenio_linea_pago_manager,Access Adeudo Convenio Linea Manager,model_adeudo_convenio_linea_pago,hr.group_hr_manager,1,1,1,1
+access_adeudo_convenio_user,Access Adeudo Convenio User,model_adeudo_convenio,hr.group_hr_user,1,0,1,0
+access_adeudo_convenio_linea_pago_user,Access Adeudo Convenio Linea User,model_adeudo_convenio_linea_pago,hr.group_hr_user,1,0,1,0
