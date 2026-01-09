@@ -88,14 +88,13 @@
 
                     <notebook>
                         <page string="Plan de Pagos" name="plan_pagos">
-                            <!-- Definimos que el campo sea editable excepto cuando esté cerrado -->
                             <field name="linea_pago_ids" readonly="estado == 'cerrado'">
                                 <tree editable="bottom" create="0" delete="0">
                                     <field name="numero_pago" readonly="1" force_save="1"/>
                                     <field name="fecha_pago" readonly="1" force_save="1"/>
                                     <field name="monto" readonly="1" force_save="1"/>
-                                    <!-- estado_pago explícitamente editable y forzando guardado -->
-                                    <field name="estado_pago" widget="badge" 
+                                    <!-- CORRECCIÓN: Se elimina widget="badge" para permitir la edición, manteniendo colores -->
+                                    <field name="estado_pago"
                                            decoration-info="estado_pago == 'pendiente'" 
                                            decoration-success="estado_pago == 'pagado'"
                                            readonly="0" force_save="1"/>
@@ -128,7 +127,7 @@
     <!-- Acción de Ventana -->
     <record id="action_adeudo_convenio" model="ir.actions.act_window">
         <field name="name">Convenios de Adeudo</field>
-        <field name="res_model">adeudo.convenio</field>
+        <field name="res_model" eval="'adeudo.convenio'"/>
         <field name="view_mode">tree,form</field>
     </record>
     
