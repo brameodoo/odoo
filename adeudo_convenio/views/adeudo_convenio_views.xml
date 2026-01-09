@@ -27,9 +27,23 @@
             <form string="Convenio de Adeudo">
                 <header>
                     <field name="estado" widget="statusbar" statusbar_visible="borrador,en_proceso,cerrado"/>
-                    <button name="action_confirmar" type="object" string="Confirmar" class="btn-primary" invisible="estado != 'borrador'"/>
-                    <button name="action_print_report" type="object" string="Imprimir" class="oe_highlight" icon="fa-print"/>
-                    <button name="action_resetear_borrador" type="object" string="Resetear" invisible="estado == 'borrador'"/>
+                    
+                    <!-- Botones de Acción Restaurados y Corregidos para v17 -->
+                    <button name="action_generar_plan_pagos" type="object" 
+                            string="Generar/Recalcular Plan" class="btn-primary" 
+                            icon="fa-cogs" invisible="estado != 'borrador'"/>
+                    
+                    <button name="action_confirmar" type="object" 
+                            string="Confirmar y Pasar a Proceso" class="btn-primary" 
+                            invisible="estado != 'borrador'"/>
+                    
+                    <button name="action_print_report" type="object" 
+                            string="Imprimir Convenio" class="oe_highlight" 
+                            icon="fa-print" invisible="estado == 'borrador'"/>
+                    
+                    <button name="action_resetear_borrador" type="object" 
+                            string="Resetear a Borrador" icon="fa-undo" 
+                            invisible="estado == 'borrador'"/>
                 </header>
                 
                 <sheet>
