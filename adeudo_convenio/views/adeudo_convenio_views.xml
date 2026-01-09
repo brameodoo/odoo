@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Vista Tree (Lista) Actualizada - Revertido de <list> a <tree> -->
+    <!-- Vista Tree (Lista) -->
     <record id="view_tree_adeudo_convenio" model="ir.ui.view">
         <field name="name">adeudo.convenio.tree</field>
         <field name="model">adeudo.convenio</field>
@@ -24,7 +24,7 @@
         </field>
     </record>
 
-    <!-- Vista Form Actualizada -->
+    <!-- Vista Form -->
     <record id="view_form_adeudo_convenio" model="ir.ui.view">
         <field name="name">adeudo.convenio.form</field>
         <field name="model">adeudo.convenio</field>
@@ -80,10 +80,10 @@
                         <field name="numero_pagos_sugerido" readonly="1"/>
                     </group>
 
-                    <group string="Progreso de Recuperación">
+                    <group string="Progreso">
                         <field name="progreso_pago_porcentaje" widget="progressbar"/>
-                        <field name="total_abonado"/>
-                        <field name="monto_pendiente"/>
+                        <field name="total_abonado" readonly="1"/>
+                        <field name="monto_pendiente" readonly="1"/>
                     </group>
 
                     <notebook>
@@ -109,7 +109,7 @@
                                 <field name="estado_convenio_firma" widget="radio" options="{'horizontal': true}"/>
                             </group>
                         </page>
-                        <page string="Notas Internas" name="notas">
+                        <page string="Notas" name="notas">
                             <field name="notas" placeholder="Añadir observaciones adicionales..."/>
                         </page>
                     </notebook>
@@ -143,4 +143,3 @@
               sequence="10"
               groups="hr.group_hr_manager"/>
 </odoo>
-
