@@ -41,9 +41,10 @@
                             string="Confirmar y Pasar a Proceso" class="btn-primary" 
                             invisible="estado != 'borrador'"/>
                     
+                    <!-- BOTÓN IMPRIMIR: Ahora visible siempre para facilitar el acceso -->
                     <button name="action_print_report" type="object" 
                             string="Imprimir Convenio" class="oe_highlight" 
-                            icon="fa-print" invisible="estado == 'borrador'"/>
+                            icon="fa-print"/>
                     
                     <button name="action_resetear_borrador" type="object" 
                             string="Resetear a Borrador" icon="fa-undo" 
@@ -88,15 +89,18 @@
 
                     <notebook>
                         <page string="Plan de Pagos" name="plan_pagos">
-                            <field name="linea_pago_ids">
+                            <!-- Agregamos readonly="0" para asegurar que la lista sea siempre editable -->
+                            <field name="linea_pago_ids" readonly="0">
                                 <tree editable="bottom" create="0" delete="0">
                                     <field name="numero_pago" readonly="1"/>
                                     <field name="fecha_pago" readonly="1"/>
                                     <field name="monto" readonly="1"/>
+                                    <!-- estado_pago explícitamente editable -->
                                     <field name="estado_pago" widget="badge" 
                                            decoration-info="estado_pago == 'pendiente'" 
-                                           decoration-success="estado_pago == 'pagado'"/>
-                                    <field name="comentario"/>
+                                           decoration-success="estado_pago == 'pagado'"
+                                           readonly="0"/>
+                                    <field name="comentario" readonly="0"/>
                                 </tree>
                             </field>
                         </page>
