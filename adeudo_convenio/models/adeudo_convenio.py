@@ -60,7 +60,11 @@ class AdeudoConvenio(models.Model):
         ('prontos_pagos', 'Prontos Pagos'),
         ('almacen_sap', 'Almacén SAP'),
         ('excedente_materiales', 'Excedente de Materiales'),
-        ('recolecciones', 'recolecciones')
+        ('recolecciones', 'recolecciones'),
+        ('tarjeta_gasolina', 'Tarjeta de Gasolina'),
+        ('gestoria_vehicular', 'Gestoria Vehicular'),
+        ('impulsos_preocesables', 'Impulsos Procesables'),
+        ('licencia_conducir', 'Licencia de Conducir')        
     ], string='Motivo del Adeudo', required=True, tracking=True)
 
     distrito = fields.Selection([
@@ -392,3 +396,4 @@ class AdeudoConvenioLineaPago(models.Model):
         ('pagado', 'Pagado')
     ], default='pendiente', string='Estado de Pago')
     comentario = fields.Char(string='Comentario')
+
